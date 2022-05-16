@@ -52,6 +52,8 @@ async def auth_login(data: LoginData, session=Depends(get_db_session)):
         sa.select(
             User.id,
             User.password
+        ).where(
+            User.username == data.username
         )
     ).fetchone()
 
