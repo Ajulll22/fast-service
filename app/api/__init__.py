@@ -7,6 +7,8 @@ from app.api.auth.auth_refresh_token import auth_refresh_token, RefreshTokenResp
 from app.api.auth.get_profile import get_profile, GetProfileResponseModel
 from app.api.auth.edit_profile import edit_profile
 
+from app.api.transaction.create_transaction import create_transaction, CreateTransactionResponseModel
+
 
 api_router = APIRouter()
 
@@ -22,3 +24,7 @@ api_router.add_api_route('/api/v1/auth/profile', get_profile,
                          methods=['GET'], tags=['Auth'], response_model=GetProfileResponseModel)
 api_router.add_api_route('/api/v1/auth/profile', edit_profile,
                          methods=['PUT'], tags=['Auth'], status_code=204)
+
+
+api_router.add_api_route('/api/v1/transaction', create_transaction,
+                         methods=['POST'], tags=['Transaction'], response_model=CreateTransactionResponseModel)
