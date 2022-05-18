@@ -8,6 +8,7 @@ from app.api.auth.get_profile import get_profile, GetProfileResponseModel
 from app.api.auth.edit_profile import edit_profile
 
 from app.api.transaction.create_transaction import create_transaction, CreateTransactionResponseModel
+from app.api.transaction.create_transaction_item import create_transaction_item, CreateTransactionItemResponseModel
 
 
 api_router = APIRouter()
@@ -28,3 +29,5 @@ api_router.add_api_route('/api/v1/auth/profile', edit_profile,
 
 api_router.add_api_route('/api/v1/transaction', create_transaction,
                          methods=['POST'], tags=['Transaction'], response_model=CreateTransactionResponseModel)
+api_router.add_api_route('/api/v1/transaction-item', create_transaction_item,
+                         methods=['POST'], tags=['Transaction'], response_model=CreateTransactionItemResponseModel)
