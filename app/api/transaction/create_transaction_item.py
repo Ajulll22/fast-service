@@ -7,12 +7,12 @@ from app.models.product import Product
 from fastapi import Header, Depends
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel
+import sqlalchemy as sa
 
 
 class CreateTransactionItemData(BaseModel):
     transaction_id: int
     product_id: int
-    price: int
     qty: int
 
 
@@ -51,7 +51,7 @@ async def create_transaction_item(data: CreateTransactionItemData, user_id: int 
 
     # check product
     product = session.query(
-        Product.id, Product.name
+        Product.id, Product.name, Product.price
     ).filter(
         Product.id == data.product_id
     ).filter(
@@ -61,17 +61,28 @@ async def create_transaction_item(data: CreateTransactionItemData, user_id: int 
     if not product:
         raise HTTPException(400, detail='Product Not Found')
 
+    total = product.price * data.qty
+
     transaction_item = TransactionItem(
         user_id=user_id,
         transaction_id=data.transaction_id,
         product_id=data.product_id,
         product_name=product.name,
-        price=data.price,
+        price=product.price,
         qty=data.qty,
-        total=data.price * data.qty
+        total=total
     )
 
     session.add(transaction_item)
+
+    # add total transaction
+    session.execute(
+        sa.update(Transaction).values(
+            total=Transaction.total + total
+        ).where(
+            Transaction.id == data.transaction_id
+        )
+    )
 
     session.commit()
 
